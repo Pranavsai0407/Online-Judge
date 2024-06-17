@@ -13,6 +13,7 @@ const userRouter = require('./routes/userRoute');
 const submissionRouter = require('./routes/submissionRoute');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const path = require('path');
 
 app.use(cors({
   origin: 'http://localhost:5173', // Update with your frontend URL
@@ -125,6 +126,7 @@ app.use('/api/v1/testcases', testcaseRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/submissions',submissionRouter);
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is listening on Port ${process.env.PORT}!`);

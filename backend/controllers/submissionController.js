@@ -44,26 +44,31 @@ const asyncHandler = (requestHandler) => {
     }
 };
 
-const createSubmission = async (data) => {
-    try {
-      const submissionData = {
-        userId: data.user._id,
-        language: data.language,
-        code: data.code,
-        verdict: data.verdict,
-        problemId: data.problemId,
-        timeTaken: data.timeTaken,
-        memoryUsed: data.memoryUsed,
-        submissionTime: new Date()
-      };
-      
-      const submission = await Submission.create(submissionData);
-      console.log(submission);
-    } catch (error) {
-      throw new ApiError(400, error.message);
-    }
-  };
-  
+const createSubmission = async (req, res, next) => {
+  try {
+    const { userId, language, code, verdict, problemId, timeTaken, memoryUsed } = req.body;
+    //console.log(userId);
+    const submissionData = {
+      userId,
+      language,
+      code,
+      verdict,
+      problemId,
+      execTime:timeTaken,
+      memory:memoryUsed,
+      submissionTime: new Date()
+    };
+
+    const submission = await Submission.create(submissionData);
+
+    res.status(201).json({
+      success: true,
+      data: submission
+    });
+  } catch (error) {
+    next(new ApiError(400, error.message));
+  }
+};
 
 const getSubmissions = async (req, res, next) => {
     try {
@@ -93,16 +98,21 @@ const getUserSubmissions = async (req, res, next) => {
 }
 
 const getUserProblemSubmissions = async (req, res, next) => {
-    try {
-        const { userId, problemId } = req.params;
-        const submissions = await Submission.find({ user: userId, problemId: problemId });
-        return res.status(200).json(new ApiResponse(200, submissions));
-    } catch (error) {
-        return res.status(400).json(new ApiResponse(400, error.message));
-    }
-}
+  try {
+    const { userId, _id } = req.params;
+    const submissions = await Submission.find({ userId: userId, problemId:_id });
+    
+    //console.log(userId,_id);
+    
+    return res.status(200).json({ data: submissions });
+  } catch (error) {
+    console.error("Error fetching submissions:", error);
+    return res.status(500).json({ message: "Failed to fetch submissions" });
+  }
+};
+
 const getMostRecentSubmission = async (req, res) => {
-    console.log('okkk');
+    //console.log('okkk');
     try {
       const userId = req.user._id;
       const mostRecentSubmission = await Submission.findOne({ userId: userId })
@@ -205,7 +215,7 @@ const EvaluateSubmission = asyncHandler(async (req, res, next) => {
   });
   
 const getUserData = asyncHandler(async (req, res) => {
-
+    
     let profile = JSON.parse(JSON.stringify(req.user));
     const uniqueProblemsSolved = await Submission.distinct('problemId', { userId: req.user._id, verdict: "Accepted" });
     profile.problemsSolved = uniqueProblemsSolved.length;

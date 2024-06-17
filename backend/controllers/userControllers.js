@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const  User  = require("../models/user");
 
 // Custom error handling class
 class ApiError extends Error {
@@ -35,6 +36,7 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 
 const getUserType = asyncHandler(async (req, res) => {
     if (!req.user) {
+        //console.log("error");
         return res.status(403).json(new ApiResponse(
             403,
             null,
@@ -52,6 +54,43 @@ const getUserType = asyncHandler(async (req, res) => {
         `User type fetched successfully: ${userType}`
     ));
 });
+const uploadProfilePhoto = asyncHandler(async (req, res) => {
+    if (req.file) {
+        const imageUrl = req.file.path;
+        const userId = req.user._id;
 
-module.exports = {getCurrentUser,getUserType};
+        // Fetch the user
+        const user = await User.findById(userId);
+
+        // If user already has a photo, delete it from Cloudinary
+        if (user.photo) {
+            let publicId = user.photo.split('/').pop().split('.')[0];
+            publicId = 'onlineJudge/' + publicId;
+            console.log(publicId);
+            await cloudinary.uploader.destroy(publicId);
+        }
+
+        // Update the photo field
+        user.photo = imageUrl;
+
+        // Save the user
+        await user.save();
+
+        res.json(new ApiResponse(
+            200,
+            { imageUrl },
+            "Profile photo uploaded successfully"
+        ));
+    } else {
+        throw new ApiError(400, "Please upload a file")
+    }
+})
+
+
+const getAllUsers = asyncHandler(async (req, res) => {
+    const users = await User.find({}).select('-password');
+    res.status(200).json(new ApiResponse(200, users, "All users fetched successfully"));
+});
+
+module.exports = {getCurrentUser,getUserType,getAllUsers,uploadProfilePhoto};
 

@@ -141,23 +141,28 @@
   font-weight: 800;
 }
 
-
-.status-accepted {
-  color: green;
-}
-
-.status-wrong {
-  color: red;
-}
-
-.status-timeout {
-  color: red;
-}
-
-.status-memory {
-  color: red;
-}
-
 .submission-result {
   margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
 }
+
+.status-accepted {
+  background-color: green;
+}
+
+.status-wrong,
+.status-timeout,
+.status-memory {
+  background-color: red;
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: red;
+  color: white;
+}
+

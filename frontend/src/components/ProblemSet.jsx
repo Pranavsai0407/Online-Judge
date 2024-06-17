@@ -14,7 +14,7 @@ function ProblemSet() {
     const isLoggedIn = async () => {
       try {
         const response = await axios.post("http://localhost:5000/api/v1/user/userType");
-        console.log(response);
+        //console.log(response);
         setAdmin(response.data.data.userType === 'admin'); // Assuming response contains userType
       } catch (error) {
         console.log(error);

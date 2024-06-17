@@ -1,7 +1,42 @@
 import React from 'react';
+import { useEffect, useState } from "react";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Assuming you are using React Router for navigation
 import './HomePage.css';
 
+
 const HomePage = () => {
+  const navigate = useNavigate();
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+    const isLoggedIn = async () => {
+      try {
+        const response = await axios.post("http://localhost:5000/api/v1/user/userType");
+        console.log(response);
+        setAdmin(response.data.data.userType === 'admin'); // Assuming response contains userType
+      } catch (error) {
+        console.log('error');
+        console.log(error);
+        navigate('/');
+      }
+    };
+    isLoggedIn();
+  }, [navigate]);
+
+  const logOutHandler = async () => {
+    try {
+      await axios.post('http://localhost:5000/logout');
+      localStorage.clear(); // Optionally clear local storage or session storage
+      navigate("/"); // Navigate to the home page or login page after logout
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
+
+  const handleUsers = () => {
+    navigate("/Users");
+  };
+
   return (
     <div className="home-page">
       <header className="header">
@@ -10,8 +45,11 @@ const HomePage = () => {
           <ul className="nav-links">
             <li><a href="/HomePage">Home</a></li>
             <li><a href="/ProblemSet">Problems</a></li>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="/Profile">Profile</a></li>
+            <li>{admin && (
+            <a href="/Users">Users</a>
+          )}</li>
+            <li><button onClick={logOutHandler}>Logout</button></li>
           </ul>
         </nav>
       </header>

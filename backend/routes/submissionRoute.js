@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 
-const{createSubmission, getSubmissions, getSubmission, getUserSubmissions, EvaluateSubmission,getUserProblemSubmissions,getMostRecentSubmission} = require('../controllers/submissionController.js');
+const{createSubmission, getSubmissions, getSubmission, getUserSubmissions, EvaluateSubmission,getUserProblemSubmissions,getMostRecentSubmission,getUserData} = require('../controllers/submissionController.js');
 
 const {authenticateToken,authorizeRoles}=require('../middlewares/auth');
 
@@ -30,12 +30,13 @@ async function compileAndRunMultiple(req, res, next) {
 
 
 
-router.get('/',getSubmissions,authenticateToken,authorizeRoles);
-router.post('/',createSubmission,authenticateToken,authorizeRoles);
+router.get('/',authenticateToken,authorizeRoles,getSubmissions);
+router.post('/create',authenticateToken,createSubmission);
 router.get('/:_id',getUserSubmissions);
+router.get('/profile',authenticateToken,getUserData);
 router.get('/:_id',getSubmission);
 router.post('/submit',authenticateToken,compileAndRunMultiple,EvaluateSubmission);
-router.get('/user/:userId/problem/:problemId', authenticateToken, getUserProblemSubmissions);
+router.get('/user/:userId/problem/:_id', authenticateToken, getUserProblemSubmissions);
 router.get('/recentSubmission',authenticateToken,getMostRecentSubmission);
 
 

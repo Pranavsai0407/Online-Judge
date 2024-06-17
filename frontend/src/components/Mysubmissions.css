@@ -1,0 +1,57 @@
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .nav-links {
+    list-style-type: none;
+    display: flex;
+  }
+  
+  .nav-links li {
+    margin-right: 1rem;
+  }
+  
+  .nav-links li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .my-submissions-container {
+    padding: 2rem;
+  }
+  
+  .submission-item {
+    margin-bottom: 2rem;
+    border: 1px solid #ccc;
+    padding: 1rem;
+  }
+  
+  .submission-item p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .submission-item code {
+    display: block;
+    padding: 0.5rem;
+    background-color: #f0f0f0;
+    font-family: monospace;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+  
+  .submission-item code:before {
+    content: 'Submitted Code:';
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  

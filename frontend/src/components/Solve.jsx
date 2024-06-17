@@ -15,7 +15,7 @@ function SolveProblem() {
   const [problem, setProblem] = useState(null);
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('cpp');
-  const [submissionResult, setSubmissionResult] = useState(null); // State to store submission result
+  const [submissionResult, setSubmissionResult] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -32,26 +32,6 @@ function SolveProblem() {
     fetchProblem();
   }, [_id, navigate]);
 
-  useEffect(() => {
-    if (submissionResult) {
-      fetchVerdict(); // Call fetchVerdict when submissionResult changes
-    }
-  }, [submissionResult]);
-
-  const fetchVerdict = async () => {
-    try {
-      const { data } = await axios.get(`http://localhost:5000/api/v1/submissions/recentSubmission`);
-      let submissionResult = data.data.submission;
-      delete submissionResult.userId;
-      delete submissionResult.problemId;
-      delete submissionResult.__v;
-      setSubmissionResult(submissionResult);
-
-    } catch (error) {
-      console.error('Error fetching verdict:', error);
-    }
-  };
-
   const getLanguageExtension = (language) => {
     switch (language) {
       case 'c':
@@ -66,25 +46,49 @@ function SolveProblem() {
     }
   };
 
-  const handleSubmit = async () => {
-    const response = await axios.get(`http://localhost:5000/api/v1/problems/getProblemtestcases/${_id}`);
-    const payload = {
-      language,
-      code,
-      problem_id: problem._id,
-      timeLimit: problem.timeLimit,
-      memoryLimit: problem.memoryLimit,
-      testcases: response.data.data,
-    };
+  const handleMySubmissions = () => {
+    navigate(`/MySubmissions/${_id}`);
+  };
 
+  const handleSubmit = async () => {
     try {
-      const response = await axios.post(`http://localhost:5000/api/v1/submissions/submit`, payload);
-      fetchVerdict(); // Call fetchVerdict after successful submission
+      const response = await axios.get(`http://localhost:5000/api/v1/problems/getProblemtestcases/${_id}`);
+      //console.log(typeof _id);
+      const payload = {
+        language,
+        code,
+        problem_id: problem._id,
+        timeLimit: problem.timeLimit,
+        memoryLimit: problem.memoryLimit,
+        testcases: response.data.data,
+      };
+
+      const submissionResponse = await axios.post(`http://localhost:8000/submit`, payload);
+      const userResponse = await axios.get(`http://localhost:5000/api/v1/user/current-user`);
+
+      const { verdict, timeTaken, memoryUsed } = submissionResponse.data;
+      const userId = userResponse.data.data._id;
+
+      const submissionData = {
+        userId,
+        language,
+        code,
+        verdict,
+        problemId: _id,
+        timeTaken: timeTaken,
+        memoryUsed: memoryUsed,
+      };
+
+      const dbResponse = await axios.post(`http://localhost:5000/api/v1/submissions/create`, submissionData);
+      setSubmissionResult(submissionData);
+      setError(''); // Clear previous errors
     } catch (error) {
+      console.log(error);
       let compilationError = error.response?.data || {};
       const errorMessage = (compilationError.message && compilationError.message.length <= 60) ? compilationError.message : 'Submission error';
       const stderr = compilationError.error || '';
       setError(stderr);
+      setSubmissionResult(null); // Clear previous submission result
       console.error('Submission error:', errorMessage, stderr);
     }
   };
@@ -113,6 +117,7 @@ function SolveProblem() {
         break;
     }
   }
+  //****After changes*************************** */
 
   return (
     <div>
@@ -120,6 +125,7 @@ function SolveProblem() {
         <nav className="navbar">
           <div className="logo">Online Judge</div>
           <ul className="nav-links">
+            <li><button className="my-submissions-button" onClick={handleMySubmissions}>My Submissions</button></li>
             <li><a href="/Compiler">Custom Test</a></li>
             <li><a href="/HomePage">Home</a></li>
             <li><a href="/ProblemSet">Problems</a></li>
@@ -150,8 +156,8 @@ function SolveProblem() {
           <h2>Example Testcases</h2>
           {problem.testcases.slice(0, 3).map((testcase, index) => (
             <div key={index} className="testcase">
-              <p><strong>Input:</strong> {testcase.input}</p>
-              <p><strong>Output:</strong> {testcase.output}</p>
+              <p><strong>Input:</strong> {testcase.input.join(' ')}</p>
+              <p><strong>Output:</strong> {testcase.output.join(' ')}</p>
             </div>
           ))}
         </div>
@@ -181,8 +187,8 @@ function SolveProblem() {
           <div className={`submission-result ${statusClass}`}>
             <h2>Submission Result</h2>
             <p>Status: {submissionResult.verdict}</p>
-            <p>Time Taken: {submissionResult.execTime} ms</p>
-            <p>Memory Used: {submissionResult.memory} KB</p>
+            <p>Time Taken: {submissionResult.timeTaken} ms</p>
+            <p>Memory Used: {submissionResult.memoryUsed} KB</p>
           </div>
         )}
         {/* Display error */}
