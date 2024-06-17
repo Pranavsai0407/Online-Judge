@@ -14,7 +14,7 @@ if (!fs.existsSync(outputPath)) {
 
 const executeCpp = (filepath, inputPath) => {
   const jobId = path.basename(filepath).split('.')[0];
-  const outPath = path.join(outputPath, `${jobId}.exe`);
+  const outPath = path.join(outputPath, `${jobId}.out`);
 
   return new Promise((resolve, reject) => {
     const startTime = process.hrtime(); // Start time
