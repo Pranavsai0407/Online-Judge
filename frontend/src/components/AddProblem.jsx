@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AddProblem.css';
+import { API_BACKEND_URL } from './config';
+
 axios.defaults.withCredentials = true;
 
 function AddProblem() {
@@ -22,7 +24,7 @@ function AddProblem() {
   useEffect(() => {
     const isLoggedIn = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/api/v1/user/userType");
+        const response = await axios.post(`${API_BACKEND_URL}/api/v1/user/userType`);
         if (response.data.data.userType !== "admin") {
           alert("You are not allowed to do this!");
           navigate('/ProblemSet');
@@ -38,7 +40,7 @@ function AddProblem() {
   const createProblem = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/v1/problems/create", data);
+      await axios.post(`${API_BACKEND_URL}/api/v1/problems/create`, data);
       navigate("/HomePage");
     } catch (error) {
       console.log(error);

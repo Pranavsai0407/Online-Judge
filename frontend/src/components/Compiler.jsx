@@ -6,6 +6,7 @@ import { java } from '@codemirror/lang-java';
 import { python } from '@codemirror/lang-python';
 import { oneDark } from '@codemirror/theme-one-dark';
 import './Compiler.css';
+import { API_COMPILER_URL} from './config';
 
 function Compiler() {
   const [code, setCode] = useState(``);
@@ -20,7 +21,7 @@ function Compiler() {
       input
     };
     try {
-      const { data } = await axios.post('http://localhost:8000/run', payload);
+      const { data } = await axios.post(`${API_COMPILER_URL}/run`, payload);
       console.log(data);
       setOutput(data.output);
     } catch (error) {

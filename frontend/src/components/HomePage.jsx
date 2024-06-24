@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Assuming you are using React Router for navigation
 import './HomePage.css';
-
+import { API_BACKEND_URL } from './config';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ const HomePage = () => {
   useEffect(() => {
     const isLoggedIn = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/api/v1/user/userType");
+        const response = await axios.post(`${API_BACKEND_URL}/api/v1/user/userType`);
         console.log(response);
         setAdmin(response.data.data.userType === 'admin'); // Assuming response contains userType
       } catch (error) {
@@ -25,7 +25,7 @@ const HomePage = () => {
 
   const logOutHandler = async () => {
     try {
-      await axios.post('http://localhost:5000/logout');
+      await axios.post(`${API_BACKEND_URL}/logout`);
       localStorage.clear(); // Optionally clear local storage or session storage
       navigate("/"); // Navigate to the home page or login page after logout
     } catch (error) {

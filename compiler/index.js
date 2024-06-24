@@ -13,7 +13,8 @@ import executePython from './executePython.js';
 
 const app = express();
 app.use(cors({
-    origin: 'http://localhost:5173', // Update with your frontend URL
+    origin: 'https://frontend.algorithmicjudge.online', // Update with your frontend URL
+    //origin: `http://localhost:5173`,
     credentials: true, // Allow credentials (cookies, headers)
 }));
 app.use(express.json());

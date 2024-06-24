@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import "./Register.css";
 import axios from 'axios';
+import { API_BACKEND_URL } from './config';
 
 axios.defaults.withCredentials = true;
 
@@ -22,7 +23,7 @@ function Register(){
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response= await axios.post('http://localhost:5000/register',data);
+      const response= await axios.post(`${API_BACKEND_URL}/register`,data);
       alert("User registered successfully");
       navigate("/HomePage");
     } catch (error) {

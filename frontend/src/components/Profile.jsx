@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import './Profile.css'; // Import your CSS file for this component
+import { API_BACKEND_URL } from './config';
 
 function ProfilePage() {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ function ProfilePage() {
     useEffect(() => {
         const isLoggedIn = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/v1/user/current-user");
+                const response = await axios.get(`${API_BACKEND_URL}/api/v1/user/current-user`);
                 // Assuming response.data.user contains user information
                 if (response.data.data) {
                     fetchUser(); // Fetch user data based on authenticated user
@@ -38,9 +39,20 @@ function ProfilePage() {
         isLoggedIn();
     }, [navigate]);
 
+    const logOutHandler = async () => {
+        try {
+          await axios.post(`${API_BACKEND_URL}/logout`);
+          localStorage.clear(); // Optionally clear local storage or session storage
+          navigate("/"); // Navigate to the home page or login page after logout
+        } catch (error) {
+          console.error('Failed to log out:', error);
+        }
+      };
+    
+
     const fetchUser = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/v1/user/current-user");
+            const response = await axios.get(`${API_BACKEND_URL}/api/v1/user/current-user`);
             const userData = response.data.data;
             if (userData) {
                 setData({
@@ -73,7 +85,7 @@ function ProfilePage() {
             formData.append("profileImage", image);
 
             // Send the image data to the server
-            const response = await axios.post("http://localhost:5000/api/v1/user/updateProfileImage", formData, {
+            const response = await axios.post(`${API_BACKEND_URL}/api/v1/user/updateProfileImage`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -88,10 +100,21 @@ function ProfilePage() {
     };
 
     return (
+        <div className="profile-page">
+        <header className="header">
+        <nav className="navbar">
+          <div className="logo">Online Judge</div>
+          <ul className="nav-links">
+            <li><a href="/HomePage">Home</a></li>
+            <li><a href="/ProblemSet">Problems</a></li>
+            <li><button onClick={logOutHandler}>Logout</button></li>
+          </ul>
+        </nav>
+      </header>
         <div className="profile-container">
             <div className="profile-left">
                 <img
-                    src={data.photo ? `http://localhost:5000/${data.photo}` : "https://www.w3schools.com/howto/img_avatar.png"}
+                    src={data.photo ? `${API_BACKEND_URL}/${data.photo}` : "https://www.w3schools.com/howto/img_avatar.png"}
                     alt="Avatar"
                     className="profile-image"
                 />
@@ -121,6 +144,8 @@ function ProfilePage() {
                     <strong>User Type:</strong> {data.userType}
                 </div>
             </div>
+        </div>
+
         </div>
     );
 }

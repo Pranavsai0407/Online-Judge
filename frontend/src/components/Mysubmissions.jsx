@@ -7,6 +7,8 @@ import { java } from '@codemirror/lang-java';
 import { python } from '@codemirror/lang-python';
 import { oneDark } from '@codemirror/theme-one-dark';
 import './Mysubmissions.css';
+import { API_BACKEND_URL } from './config';
+
 
 axios.defaults.withCredentials = true;
 
@@ -19,12 +21,12 @@ function MySubmissions() {
   useEffect(() => {
     const fetchMySubmissions = async () => {
       try {
-        const userResponse = await axios.get(`http://localhost:5000/api/v1/user/current-user`);
+        const userResponse = await axios.get(`${ API_BACKEND_URL }/api/v1/user/current-user`);
         const userId = userResponse.data.data._id;
         const username = userResponse.data.data.username;
         setUsername(username);
 
-        const response = await axios.get(`http://localhost:5000/api/v1/submissions/user/${userId}/problem/${_id}`);
+        const response = await axios.get(`${API_BACKEND_URL}/api/v1/submissions/user/${userId}/problem/${_id}`);
         setMySubmissions(response.data.data);
 
       } catch (error) {

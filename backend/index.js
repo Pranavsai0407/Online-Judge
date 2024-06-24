@@ -16,7 +16,8 @@ const cors = require('cors');
 const path = require('path');
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Update with your frontend URL
+  origin: 'https://frontend.algorithmicjudge.online', // Update with your frontend URL
+  //origin: `http://localhost:5173`,
   credentials: true, // Allow credentials (cookies, headers)
 }));
 

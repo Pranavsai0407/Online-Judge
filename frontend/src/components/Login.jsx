@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import "./Login.css";
+import { API_BACKEND_URL } from './config';
 
 axios.defaults.withCredentials = true;
 
@@ -21,7 +22,8 @@ function Login() {
     setLoading(true);
     console.log("Submitting data:", data);
     try {
-      const response = await axios.post('http://localhost:5000/login', data);
+      console.log(API_BACKEND_URL);
+      const response = await axios.post(`${API_BACKEND_URL}/login`, data);
       console.log("Response:", response);
       alert("User logged in successfully");
       navigate("/HomePage");

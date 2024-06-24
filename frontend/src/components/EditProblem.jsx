@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './EditProblem.css';
+import { API_BACKEND_URL } from './config';
 
 axios.defaults.withCredentials = true;
 
@@ -14,7 +15,7 @@ function EditProblem() {
       const isLoggedIn = async () => {
         try {
           const response = await axios.post(
-            "http://localhost:5000/api/v1/user/userType"
+            `${API_BACKEND_URL}/api/v1/user/userType`
           );
           if (response.data.data.userType !== "admin") {
             alert("You are not allowed to do this!");
@@ -46,7 +47,7 @@ function EditProblem() {
   useEffect(() => {
     const fetchProblem = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/v1/problems/getProblem/${_id}`);
+        const response = await axios.get(`${API_BACKEND_URL}/api/v1/problems/getProblem/${_id}`);
         setData(response.data.data);
       } catch (error) {
         console.log("Error fetching problem:", error);
@@ -59,7 +60,7 @@ function EditProblem() {
   const updateProblem = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/v1/problems/update/${_id}`, data);
+      await axios.put(`${API_BACKEND_URL}/api/v1/problems/update/${_id}`, data);
       navigate("/ProblemSet");
     } catch (error) {
       console.log("Error updating problem:", error);

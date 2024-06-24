@@ -7,6 +7,7 @@ import { java } from '@codemirror/lang-java';
 import { python } from '@codemirror/lang-python';
 import { oneDark } from '@codemirror/theme-one-dark';
 import './Solve.css';
+import { API_BACKEND_URL, API_COMPILER_URL} from './config';
 
 axios.defaults.withCredentials = true;
 
@@ -22,7 +23,7 @@ function SolveProblem() {
   useEffect(() => {
     const fetchProblem = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/v1/problems/getProblem/${_id}`);
+        const response = await axios.get(`${API_BACKEND_URL}/api/v1/problems/getProblem/${_id}`);
         setProblem(response.data.data);
       } catch (error) {
         console.error("Error fetching problem:", error);
@@ -52,7 +53,7 @@ function SolveProblem() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/v1/problems/getProblemtestcases/${_id}`);
+      const response = await axios.get(`${API_BACKEND_URL}/api/v1/problems/getProblemtestcases/${_id}`);
       //console.log(typeof _id);
       const payload = {
         language,
@@ -63,8 +64,8 @@ function SolveProblem() {
         testcases: response.data.data,
       };
 
-      const submissionResponse = await axios.post(`http://localhost:8000/submit`, payload);
-      const userResponse = await axios.get(`http://localhost:5000/api/v1/user/current-user`);
+      const submissionResponse = await axios.post(`${API_COMPILER_URL}/submit`, payload);
+      const userResponse = await axios.get(`${API_BACKEND_URL}/api/v1/user/current-user`);
 
       const { verdict, timeTaken, memoryUsed } = submissionResponse.data;
       const userId = userResponse.data.data._id;
@@ -79,7 +80,7 @@ function SolveProblem() {
         memoryUsed: memoryUsed,
       };
 
-      const dbResponse = await axios.post(`http://localhost:5000/api/v1/submissions/create`, submissionData);
+      const dbResponse = await axios.post(`${API_BACKEND_URL}/api/v1/submissions/create`, submissionData);
       setSubmissionResult(submissionData);
       setError(''); // Clear previous errors
     } catch (error) {
@@ -127,8 +128,8 @@ function SolveProblem() {
           <ul className="nav-links">
             <li><button className="my-submissions-button" onClick={handleMySubmissions}>My Submissions</button></li>
             <li><a href="/Compiler">Custom Test</a></li>
-            <li><a href="/HomePage">Home</a></li>
             <li><a href="/ProblemSet">Problems</a></li>
+            <li><a href="/HomePage">Home</a></li>
           </ul>
         </nav>
       </header>
