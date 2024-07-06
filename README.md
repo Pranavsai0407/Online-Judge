@@ -155,7 +155,8 @@ Make sure you have the following software installed on your local machine:
 6. **Set up environment variables**
     Create a `.env` file in the `frontend` directory and add your configuration details:
     ```env
-    VITE_REACT_INSTANCE_IP=yourInstanceIp(If pushing to aws else use "http://localhost")
+    VITE_BACKEND_URL=yourInstanceIp(If pushing to aws else use "http://localhost")
+    VITE_COMPILER_URL=yourInstanceIp(If pushing to aws else use "http://localhost")
     ```
 
 7. **Start the backend server**
