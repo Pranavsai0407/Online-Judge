@@ -47,7 +47,7 @@
   - Problem Description
   - Testcase Management Read/Add/Delete/Update Testcases
 - Code Submission and Evaluation
-  - Support for multiple languages (C, C++, Python)
+  - Support for multiple languages (C, C++, Python and Java)
   - Code Compilation
   - Code Execution
   - Test Case Validation
