@@ -120,7 +120,7 @@ Make sure you have the following software installed on your local machine:
 
 1. **Clone the repository**
     ```bash
-    git clone https://github.com/aryankes/Online-Judge-Project.git
+    git clone https://github.com/Pranavsai0407/Online-Judge.git
     cd Online-Judge
     ```
 
